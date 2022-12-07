@@ -21,10 +21,7 @@ public class Consultation {
     public void setDate(Date date) {
         this.date = date;
     }
-//hello
-    public void something(){
 
-    }
     public Date getDate() {
         return date;
     }
