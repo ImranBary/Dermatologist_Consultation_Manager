@@ -9,7 +9,7 @@ public class Consultation {
     private int cost;
     private String notes;
     public Consultation(){
-
+        //empty constructor
     }
     public Consultation(Doctor doctor,Date date,Patient patient, int Cost, String notes){
         this.doctor = doctor;
