@@ -1,5 +1,7 @@
 package ConsultManager;
 
+import javax.print.Doc;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -11,7 +13,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
 
     static Scanner input = new Scanner(System.in);
     //keeps info of the docs
-    private static ArrayList<Doctor> doctorsInfo = new ArrayList<>();
+    private ArrayList<Doctor> doctorsInfo = new ArrayList<>();
     public WestminsterSkinConsultationManager() throws IOException {
 
         //create the file
@@ -23,12 +25,10 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
             String s = scanner.nextLine();
             if(s.length() != 0 ){
                 String[] ss = s.split("#");
-                //System.out.println(ss[3]);
                 doctorsInfo.add(new Doctor(ss[0],ss[1],ss[2],ss[3],ss[4]));
             }
         }
         scanner.close();
-        //
     }
 
     @Override
@@ -38,12 +38,9 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         if (doctorsInfo.size() < MAX_DOCS){
             //String temp = surname+"#"+name+"#"+licenceNum+"#"+specialisation+"#"+telNum;
             doctorsInfo.add(doctor);
-
         }else {
             System.out.println("Dude, you've got too many docs");
         }
-
-
     }
 
     @Override
@@ -56,6 +53,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
             if (temp.getLicenceNum().equals(licenceNum)) {
                 //check if the input licence number exists as a substring
                 System.out.println(temp.toString() + "  - IS REMOVED");
+                System.out.println(doctorsInfo.size()+" - Doctor(s) remaining.");
                 //remove if so
                 doctorsInfo.remove(i);
                 removedFlag = true;
@@ -119,7 +117,16 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
             case "G":
                 System.out.println("Gui");
 
-                Gui g = new Gui();
+                //Gui g = new Gui();
+                DoctorTableModel tableModel = new DoctorTableModel(doctorsInfo);
+                JTable myTable = new JTable(tableModel);
+
+                JScrollPane panel = new JScrollPane(myTable);
+                JFrame myFrame = new JFrame();
+                myFrame.add(panel);
+                myFrame.setVisible(true);
+                myFrame.setSize(800,400);
+
 
                 break;
             case "Q":
@@ -143,6 +150,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
     public static void main(String[] args)throws IOException {
 
         WestminsterSkinConsultationManager w = new WestminsterSkinConsultationManager();
+
 
         String choice;
         do{
@@ -180,6 +188,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         System.out.println("D: Delete a Doctor");
         System.out.println("P: Print list of all Doctors");
         System.out.println("S: Store program data into file");
+        System.out.println("G: Launch GUI");
         System.out.println("Q: To Quit program\n");
     }
 }
