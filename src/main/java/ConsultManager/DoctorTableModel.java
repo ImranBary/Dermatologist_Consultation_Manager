@@ -46,4 +46,5 @@ public class DoctorTableModel extends AbstractTableModel {
     public String getColumnName(int col){
         return columnNames[col];
     }
+
 }

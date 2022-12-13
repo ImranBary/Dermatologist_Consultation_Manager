@@ -2,6 +2,7 @@ package ConsultManager;
 
 import javax.print.Doc;
 import javax.swing.*;
+import javax.swing.table.TableRowSorter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -9,8 +10,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class WestminsterSkinConsultationManager implements SkinConsultationManager{
-
-
     static Scanner input = new Scanner(System.in);
     //keeps info of the docs
     private ArrayList<Doctor> doctorsInfo = new ArrayList<>();
@@ -121,8 +120,18 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 DoctorTableModel tableModel = new DoctorTableModel(doctorsInfo);
                 JTable myTable = new JTable(tableModel);
 
+                //handles the sorting by first name
+                TableRowSorter<DoctorTableModel> sorter = new TableRowSorter<>(tableModel);
+                myTable.setRowSorter(sorter);
+                List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+                int columnIndexToSort = 0;
+                sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.ASCENDING));
+                sorter.setSortKeys(sortKeys);
+                sorter.sort();
+
                 JScrollPane panel = new JScrollPane(myTable);
                 JFrame myFrame = new JFrame();
+                myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 myFrame.add(panel);
                 myFrame.setVisible(true);
                 myFrame.setSize(800,400);
@@ -144,7 +153,6 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
 
 
         }
-
     }
 
     public static void main(String[] args)throws IOException {
