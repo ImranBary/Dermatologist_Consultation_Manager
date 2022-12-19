@@ -68,7 +68,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
     public void printListOfDoctors() {
         Collections.sort(doctorsInfo);
         for (Doctor doc: doctorsInfo){
-            System.out.println(doc.toString());
+            System.out.println(doc.forPrint());
         }
 
     }
@@ -80,6 +80,16 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
             writer.write(doc.toString()+System.lineSeparator());
         }
         writer.close();
+    }
+
+    public static void runGui(ArrayList<Doctor> doc ) throws IOException {
+        ConsultManagerGui g = new ConsultManagerGui(doc);
+        g.setTitle("Consultation manager");
+        g.setSize(800,400);
+        g.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        g.setVisible(true);
+
+
     }
     public void menu(String choice) throws IOException {
         switch(choice){
@@ -115,26 +125,8 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 break;
             case "G":
                 System.out.println("Gui");
-
-                //Gui g = new Gui();
-                DoctorTableModel tableModel = new DoctorTableModel(doctorsInfo);
-                JTable myTable = new JTable(tableModel);
-
-                //handles the sorting by first name
-                TableRowSorter<DoctorTableModel> sorter = new TableRowSorter<>(tableModel);
-                myTable.setRowSorter(sorter);
-                List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-                int columnIndexToSort = 0;
-                sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.ASCENDING));
-                sorter.setSortKeys(sortKeys);
-                sorter.sort();
-
-                JScrollPane panel = new JScrollPane(myTable);
-                JFrame myFrame = new JFrame();
-                myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                myFrame.add(panel);
-                myFrame.setVisible(true);
-                myFrame.setSize(800,400);
+                //DoctorTableModel.displayTable(doctorsInfo);
+                runGui(doctorsInfo);
 
 
                 break;
@@ -154,12 +146,8 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
 
         }
     }
-
     public static void main(String[] args)throws IOException {
-
         WestminsterSkinConsultationManager w = new WestminsterSkinConsultationManager();
-
-
         String choice;
         do{
             //print a menu of options
@@ -167,28 +155,6 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
             choice = input.nextLine().toUpperCase();
             w.menu(choice);
         }while (!choice.equals("Q"));
-
-
-
-
-    }
-    public class Gui {
-        public void somethign(){
-            ArrayList<Consultation> consultation = new ArrayList<>();
-            //do a menu here as well. cannot escape until user is happy
-
-            //get docs, put docs here
-            consultation.add(new Consultation(new Doctor(),new Date(),new Patient(),122,"Evan's a fat cunt"));
-
-        }
-
-        public void createConsult(String docDetails){
-            //deconstruct the string
-            //put that bitch into a doc, and consultation
-            //ask for patient info and date and time info along with String notes
-            //consultations.add(new Consultation(new Doctor(docDetails),new Date(),new Patient(),12,"He dead"));
-
-        }
     }
     public static void menuPrint() {
         System.out.println("\n\nPlease enter a choice:");
@@ -198,5 +164,8 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         System.out.println("S: Store program data into file");
         System.out.println("G: Launch GUI");
         System.out.println("Q: To Quit program\n");
+    }
+    public ArrayList getDocArray(){
+        return doctorsInfo;
     }
 }

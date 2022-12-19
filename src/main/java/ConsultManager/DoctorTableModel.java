@@ -1,7 +1,10 @@
 package ConsultManager;
 
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DoctorTableModel extends AbstractTableModel {
     private ArrayList<Doctor> doctorsInfo;
@@ -45,6 +48,26 @@ public class DoctorTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int col){
         return columnNames[col];
+    }
+    public static void displayTable(ArrayList<Doctor> doctorsInfo){
+        DoctorTableModel tableModel = new DoctorTableModel(doctorsInfo);
+        JTable myTable = new JTable(tableModel);
+
+        //handles the sorting by first name
+        TableRowSorter<DoctorTableModel> sorter = new TableRowSorter<>(tableModel);
+        myTable.setRowSorter(sorter);
+        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        int columnIndexToSort = 0;
+        sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.ASCENDING));
+        sorter.setSortKeys(sortKeys);
+        sorter.sort();
+
+        JScrollPane panel = new JScrollPane(myTable);
+        JFrame myFrame = new JFrame();
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.add(panel);
+        myFrame.setVisible(true);
+        myFrame.setSize(800,400);
     }
 
 }
