@@ -11,15 +11,15 @@ import java.util.*;
 
 public class WestminsterSkinConsultationManager implements SkinConsultationManager{
     static Scanner input = new Scanner(System.in);
+    private String fileName = "doctors.txt";
     //keeps info of the docs
     private ArrayList<Doctor> doctorsInfo = new ArrayList<>();
     public WestminsterSkinConsultationManager() throws IOException {
-
         //create the file
-        File doctors = new File("doctors.txt");
+        File doctors = new File(fileName);
         doctors.createNewFile();
         //code reads in each entry from the file and puts it in an array list
-        Scanner scanner = new Scanner(new File("doctors.txt"));
+        Scanner scanner = new Scanner(new File(fileName));
         while(scanner.hasNext()){
             String s = scanner.nextLine();
             if(s.length() != 0 ){
@@ -35,26 +35,25 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         //make doc object with the above inputs, better for vacillation
         //add info to array if we're not yet at max capacity
         if (doctorsInfo.size() < MAX_DOCS){
-            //String temp = surname+"#"+name+"#"+licenceNum+"#"+specialisation+"#"+telNum;
             doctorsInfo.add(doctor);
         }else {
-            System.out.println("Dude, you've got too many docs");
+            System.out.println("You have too many doctors");
         }
     }
 
     @Override
-    public void deleteDoctor(String licenceNum) {
+    public void deleteDoctor(ArrayList<Doctor> doctors,String licenceNum) {
         //loop through
         boolean removedFlag = false;
-        for (int i = 0; i<doctorsInfo.size();i++){
+        for (int i = 0; i<doctors.size();i++){
             //temp Doc
-            Doctor temp = doctorsInfo.get(i);
+            Doctor temp = doctors.get(i);
             if (temp.getLicenceNum().equals(licenceNum)) {
                 //check if the input licence number exists as a substring
                 System.out.println(temp.toString() + "  - IS REMOVED");
-                System.out.println(doctorsInfo.size()+" - Doctor(s) remaining.");
+                System.out.println(doctors.size()+" - Doctor(s) remaining.");
                 //remove if so
-                doctorsInfo.remove(i);
+                doctors.remove(i);
                 removedFlag = true;
             }
 
@@ -65,17 +64,17 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
     }
 
     @Override
-    public void printListOfDoctors() {
-        Collections.sort(doctorsInfo);
-        for (Doctor doc: doctorsInfo){
+    public void printListOfDoctors(ArrayList<Doctor> doctors) {
+        Collections.sort(doctors);
+        for (Doctor doc: doctors){
             System.out.println(doc.forPrint());
         }
 
     }
 
     @Override
-    public void saveFile() throws IOException {
-        FileWriter writer = new FileWriter("doctors.txt");
+    public void saveFile(String fileName) throws IOException {
+        FileWriter writer = new FileWriter(fileName);
         for(Doctor doc:doctorsInfo){
             writer.write(doc.toString()+System.lineSeparator());
         }
@@ -109,34 +108,29 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 addDoctor(new Doctor(sunrname,name,telNum,licenceNum,specialisation));
                 //take in details
                 break;
-
             case "D":
                 System.out.println("Enter the licence number of the doctor you wish to delete");
                 String licence = input.next();
-                deleteDoctor(licence);
+                deleteDoctor(doctorsInfo,licence);
                 break;
             case "P":
                 System.out.println("Print docs");
-                printListOfDoctors();
+                printListOfDoctors(doctorsInfo);
                 break;
             case "S":
                 System.out.println("Save to file");
-                saveFile();
+                saveFile(fileName);
                 break;
             case "G":
                 System.out.println("Gui");
-                //DoctorTableModel.displayTable(doctorsInfo);
                 runGui(doctorsInfo);
-
-
                 break;
             case "Q":
-                //still save but do nothing as well
                 System.out.println("You selected Quit, press S to save to not lose your data \n" +
                         "or press anything else to Quit without saving.");
                 String saveOrQuit = input.next();
                 if (saveOrQuit.toUpperCase().equals("S")){
-                    saveFile();
+                    saveFile(fileName);
                     System.out.println("You saved the file");
                 }else{
                     System.out.println("You quit without saving");

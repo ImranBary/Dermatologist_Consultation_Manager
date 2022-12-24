@@ -12,6 +12,12 @@ public class Doctor extends Person implements Comparable<Doctor>{
         setSpecialisation(specialisation);//for the validation
         //this.specialisation = specialisation;
     }
+    public Doctor( String name,String surname, String telNum, String licenceNum, String specialisation,Date dob){
+        super(name,surname,telNum,dob);
+        setLicenceNum(licenceNum);
+        setSpecialisation(specialisation);//for the validation
+        //this.specialisation = specialisation;
+    }
 
     public String getLicenceNum() {
         return licenceNum;
@@ -33,6 +39,7 @@ public class Doctor extends Person implements Comparable<Doctor>{
     public String toString(){
         return getSurname()+"#"+getName()+"#"+getLicenceNum()+"#"+getTelNum()+"#"+getSpecialisation();
     }
+    //needs dob
     public String forPrint(){
         return String.format("Doctor: Surname %s FirstName %s LicenceNum %s TelNum %s Specialisation %s",
                 getSurname(),getName(),getLicenceNum(),getTelNum(),getSpecialisation());

@@ -64,10 +64,10 @@ public class DoctorTableModel extends AbstractTableModel {
 
         JScrollPane panel = new JScrollPane(myTable);
         JFrame myFrame = new JFrame();
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myFrame.add(panel);
         myFrame.setVisible(true);
-        myFrame.setSize(800,400);
+        myFrame.setSize(500,400);
     }
 
 }

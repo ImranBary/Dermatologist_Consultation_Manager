@@ -11,6 +11,12 @@ public class Consultation {
     public Consultation(){
         //empty constructor
     }
+    public Consultation(Doctor doctor,Date date,Patient patient, String notes){
+        this.doctor = doctor;
+        this.date = date;
+        this.patient = patient;
+        this.notes = notes;
+    }
     public Consultation(Doctor doctor,Date date,Patient patient, int Cost, String notes){
         this.doctor = doctor;
         this.date = date;
@@ -25,6 +31,9 @@ public class Consultation {
     public Date getDate() {
         return date;
     }
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
 
     public Doctor getDoctor() {
         return doctor;
@@ -36,6 +45,16 @@ public class Consultation {
     public Patient getPatient() {
         return patient;
     }
+    public void setCost(int cost){
+        this.cost = cost;
+    }
+    public int getCost(){
+        return cost;
+    }
 
-
+    @Override
+    public String toString() {
+        return String.format("Doctor %s Patient %s \nIs booked at %d:%d Cost = £%d",doctor.forDropDownList()
+                ,patient.toString(),date.getTime()[0],date.getTime()[1],cost);
+    }
 }

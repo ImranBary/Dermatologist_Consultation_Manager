@@ -14,4 +14,9 @@ public class Patient extends Person{
     public void setiD(String iD) {
         this.iD = iD;
     }
+    public String toString(){
+        return String.format("%s %s %s %s %s",
+                getSurname(),getName(),getTelNum(),getDateOfBrth(),getiD());
+
+    }
 }

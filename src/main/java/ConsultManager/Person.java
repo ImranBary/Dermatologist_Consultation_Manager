@@ -3,7 +3,7 @@ package ConsultManager;
 public class Person {
     private String name;
     private String surname;
-    private DoB dateOfBrth;
+    private Date dateOfBrth;
     private String telNum;
 
     public Person(){
@@ -13,12 +13,18 @@ public class Person {
         setSurname(surname);
         setTelNum(telNum);
     }
+    public Person(String name,String surname,String telNum,Date dateOfBrth){
+        setName(name);
+        setSurname(surname);
+        setTelNum(telNum);
+        setDateOfBrth(dateOfBrth);
+    }
 
-    public void setDateOfBrth(DoB dateOfBrth) {
+    public void setDateOfBrth(Date dateOfBrth) {
         this.dateOfBrth = dateOfBrth;
     }
-    public DoB getDateOfBrth() {
-        return dateOfBrth;
+    public String getDateOfBrth() {
+        return dateOfBrth.getDate();
     }
     public void setName(String name) {
         this.name = name.toUpperCase();
