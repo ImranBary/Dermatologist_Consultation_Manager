@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 public class WestminsterSkinConsultationManager implements SkinConsultationManager{
@@ -31,7 +32,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
     }
 
     @Override
-    public void addDoctor(Doctor doctor) throws IOException {
+    public void addDoctor(Doctor doctor) {
         //make doc object with the above inputs, better for vacillation
         //add info to array if we're not yet at max capacity
         if (doctorsInfo.size() < MAX_DOCS){
@@ -81,16 +82,14 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         writer.close();
     }
 
-    public static void runGui(ArrayList<Doctor> doc ) throws IOException {
+    public static void runGui(ArrayList<Doctor> doc ) throws IOException, GeneralSecurityException {
         ConsultManagerGui g = new ConsultManagerGui(doc);
         g.setTitle("Consultation manager");
-        g.setSize(800,400);
+        g.setSize(400,400);
         g.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g.setVisible(true);
-
-
     }
-    public void menu(String choice) throws IOException {
+    public void menu(String choice) throws IOException, GeneralSecurityException {
         switch(choice){
             case "A":
                 System.out.println("Add doc");
@@ -136,11 +135,9 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                     System.out.println("You quit without saving");
                 }
                 break;
-
-
         }
     }
-    public static void main(String[] args)throws IOException {
+    public static void main(String[] args) throws IOException, GeneralSecurityException {
         WestminsterSkinConsultationManager w = new WestminsterSkinConsultationManager();
         String choice;
         do{

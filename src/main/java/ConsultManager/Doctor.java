@@ -9,8 +9,8 @@ public class Doctor extends Person implements Comparable<Doctor>{
     public Doctor( String name,String surname, String telNum, String licenceNum, String specialisation){
         super(name,surname,telNum);
         setLicenceNum(licenceNum);
-        setSpecialisation(specialisation);//for the validation
-        //this.specialisation = specialisation;
+        setSpecialisation(specialisation);
+
     }
     public Doctor( String name,String surname, String telNum, String licenceNum, String specialisation,Date dob){
         super(name,surname,telNum,dob);
