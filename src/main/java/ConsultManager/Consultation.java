@@ -17,6 +17,7 @@ public class Consultation {
     private Doctor doctor;
     private int cost;
 
+    /*https://stackoverflow.com/questions/55070513/how-to-easily-encrypt-and-decrypt-a-string-using-tink*/
     private String encryptionKey = "2s5v8y/B?E(G+KbPeShVmYq3t6w9z$C&";
     private byte[] encryptedConsultationNotes;
 
@@ -81,7 +82,7 @@ public class Consultation {
 
     /**
      * Method to get consultation notes and decrypt it
-     * @return
+     * @return decrypted consultation notes string
      * @throws GeneralSecurityException
      */
     public String getNotes() throws GeneralSecurityException {

@@ -1,10 +1,8 @@
 package ConsultManager;
 
-import javax.print.Doc;
+
 import javax.swing.*;
-import javax.swing.table.TableRowSorter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
