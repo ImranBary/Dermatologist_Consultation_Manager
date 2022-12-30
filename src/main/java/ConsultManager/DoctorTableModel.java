@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DoctorTableModel extends AbstractTableModel {
     private ArrayList<Doctor> doctorsInfo;
-    private String[] columnNames = {"Name","Surname", "TelNum", "LicenceNum",  "Specialisation"};
+    private String[] columnNames = {"Name","Surname","DOB", "TelNum", "LicenceNum",  "Specialisation"};
 
     public DoctorTableModel(ArrayList<Doctor> doctorsInfo){
         this.doctorsInfo = doctorsInfo;
@@ -29,12 +29,15 @@ public class DoctorTableModel extends AbstractTableModel {
                 temp = doctorsInfo.get(rowIndex).getSurname();
                 break;
             case 2:
-                temp = doctorsInfo.get(rowIndex).getTelNum();
+                temp = doctorsInfo.get(rowIndex).getDateOfBrth();
                 break;
             case 3:
-                temp = doctorsInfo.get(rowIndex).getLicenceNum();
+                temp = doctorsInfo.get(rowIndex).getTelNum();
                 break;
             case 4:
+                temp = doctorsInfo.get(rowIndex).getLicenceNum();
+                break;
+            case 5:
                 temp = doctorsInfo.get(rowIndex).getSpecialisation();
                 break;
         }

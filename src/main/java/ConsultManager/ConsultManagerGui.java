@@ -38,7 +38,6 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
     private int selectedTimeIndex;
     private ArrayList<Doctor> doc = w.getDocArray();
     private ArrayList<Consultation> consultations = new ArrayList<>();
-    //private ArrayList<Integer> doctorsNotAvailable = new ArrayList<>();
     public ConsultManagerGui(ArrayList<Doctor> d) throws IOException, GeneralSecurityException {
         super("Consultation Manager");
         JPanel doctorSelectPanel = new JPanel(new GridBagLayout());
@@ -380,7 +379,6 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
                 }else if(validateComboBoxIndex(selectedDocIndex,ageDayComboBox.getSelectedIndex(),ageMonthComboBox.getSelectedIndex(),ageYearComboBox.getSelectedIndex()) == 5){
                     //code that retrieves info from the text fields and adds them to a consultation object
                     Consultation c = null;
-
                     try {
                         c = new Consultation();
                     } catch (GeneralSecurityException ex) {
@@ -500,15 +498,7 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
         label.setMinimumSize(new Dimension(130, 20));
         label.setPreferredSize(new Dimension(130, 20));
     }
-    public  int[] convertIntegers(ArrayList<Integer> integers)
-    {
-        int[] ret = new int[integers.size()];
-        for (int i=0; i < ret.length; i++)
-        {
-            ret[i] = integers.get(i).intValue();
-        }
-        return ret;
-    }
+
 
     /**
      *

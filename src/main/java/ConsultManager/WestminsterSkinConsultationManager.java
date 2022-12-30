@@ -23,7 +23,9 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
             String s = scanner.nextLine();
             if(s.length() != 0 ){
                 String[] ss = s.split("#");
-                doctorsInfo.add(new Doctor(ss[0],ss[1],ss[2],ss[3],ss[4]));
+                String[] dateArray = ss[5].split("/");
+                doctorsInfo.add(new Doctor(ss[0],ss[1],ss[2],ss[3],ss[4],
+                        new Date(Integer.parseInt(dateArray[0]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[2]))));
             }
         }
         scanner.close();
@@ -55,7 +57,6 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 doctors.remove(i);
                 removedFlag = true;
             }
-
             if(removedFlag == false)
                 System.out.println("Doctor does not exist with that licence number");
 
@@ -87,22 +88,80 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         g.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g.setVisible(true);
     }
+
+    /**
+     * Method to take date data while validating it
+     * @param message
+     * @param min
+     * @param max
+     * @return int validated date
+     */
+    public int dateInputWithValidation(String message,int min, int max){
+        boolean flag = true;
+        int returnNum = 0;
+        while (flag){
+            System.out.println(message);
+            try{
+                returnNum = input.nextInt();
+                if(returnNum < min || returnNum > max){
+                    System.out.printf("Please enter a number between %d-%d\n",min,max);
+                }else{
+                    flag = false;
+                }
+            } catch (InputMismatchException e) {
+                System.err.println("Please enter a number");
+                String somethingToMakeItStop = input.next();
+            }
+        }
+        return returnNum;
+    }
+
+    /**
+     * Method takes in confirms if string inputs are indeed integers even though they are being stored as strings
+     * @param message
+     * @return
+     */
+    public String inputStringIntNumWithValidation(String message){
+        boolean flag = true;
+        String returnString = null;
+        while (flag){
+            System.out.println(message);
+            try{
+                returnString = input.next();
+                //if this does not throw the exception then exit loop
+                Integer.parseInt(returnString);
+                flag = false;
+            }catch (NumberFormatException e){
+                System.err.println("Please enter a number");
+
+            }
+        }
+        return returnString;
+    }
     public void menu(String choice) throws IOException, GeneralSecurityException {
         switch(choice){
             case "A":
                 System.out.println("Add doc");
-                //take surname,name,telnum,licenceNum,specialisation as inputs
+                //take surname,name,DOB,telnum,licenceNum,specialisation as inputs
                 System.out.println("Enter the name:");
                 String name = input.nextLine();
                 System.out.println("Enter the surname:");
                 String sunrname = input.nextLine();
-                System.out.println("Enter the telephone number:");
-                String telNum = input.nextLine();
-                System.out.println("Enter the licence number:");
-                String licenceNum = input.nextLine();
+
+                int day = dateInputWithValidation("Enter the date of birth - Day (1-32):",1,32);
+
+                int month = dateInputWithValidation("Enter the date of birth - Day (1-12):",1,12);
+
+                int year = dateInputWithValidation("Enter the date of birth - Year (1900-2023):",1900,2023);
+
+                String telNum = inputStringIntNumWithValidation("Enter the telephone number:");
+
+                String licenceNum = inputStringIntNumWithValidation("Enter the licence number:");
+
                 System.out.println("Enter the specialisation:");
-                String specialisation = input.nextLine();
-                addDoctor(new Doctor(sunrname,name,telNum,licenceNum,specialisation));
+                String specialisation = input.next();
+                Date dateOfBirth = new Date(day,month,year);
+                addDoctor(new Doctor(sunrname,name,telNum,licenceNum,specialisation,dateOfBirth));
                 //take in details
                 break;
             case "D":

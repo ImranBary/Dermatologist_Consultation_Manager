@@ -37,17 +37,17 @@ public class Doctor extends Person implements Comparable<Doctor>{
 
     @Override
     public String toString(){
-        return getSurname()+"#"+getName()+"#"+getLicenceNum()+"#"+getTelNum()+"#"+getSpecialisation();
+        return getSurname()+"#"+getName()+"#"+getLicenceNum()+"#"+getTelNum()+"#"+getSpecialisation()+"#"+getDateOfBrth();
     }
     //needs dob
     public String forPrint(){
-        return String.format("Doctor: Surname %s FirstName %s LicenceNum %s TelNum %s Specialisation %s",
-                getSurname(),getName(),getLicenceNum(),getTelNum(),getSpecialisation());
+        return String.format("Doctor: Surname %s FirstName %s Date Of Birth %s LicenceNum %s TelNum %s Specialisation %s",
+                getSurname(),getName(),getDateOfBrth(),getLicenceNum(),getTelNum(),getSpecialisation());
 
     }
     public String forDropDownList(){
-        return String.format("%s %s %s %s",
-                getSurname(),getName(),getLicenceNum(),getSpecialisation());
+        return String.format("%s %s %s",
+                getSurname(),getName(),getLicenceNum());
 
     }
     //to sort from Doctor's surnames
@@ -55,4 +55,5 @@ public class Doctor extends Person implements Comparable<Doctor>{
     public int compareTo(Doctor doctor) {
         return (this.getSurname().compareTo(doctor.getSurname()));
     }
+
 }
