@@ -1,6 +1,7 @@
 package ConsultManager;
 
 
+import javax.print.Doc;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -38,7 +39,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         if (doctorsInfo.size() < MAX_DOCS){
             doctorsInfo.add(doctor);
         }else {
-            System.out.println("You have too many doctors");
+            System.err.println("DOCTOR NOT ADDED - TOO MANY DOCTORS");
         }
     }
 
@@ -57,10 +58,9 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 doctors.remove(i);
                 removedFlag = true;
             }
-            if(removedFlag == false)
-                System.out.println("Doctor does not exist with that licence number");
-
         }
+        if(removedFlag == false)
+            System.out.println("Doctor does not exist with that licence number");
     }
 
     @Override
@@ -108,7 +108,8 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 }else{
                     flag = false;
                 }
-            } catch (InputMismatchException e) {
+            } catch (InputMismatchException ime) {
+                System.err.println("InputMismatchException:" +ime.getMessage());
                 System.err.println("Please enter a number");
                 String somethingToMakeItStop = input.next();
             }
@@ -131,7 +132,8 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 //if this does not throw the exception then exit loop
                 Integer.parseInt(returnString);
                 flag = false;
-            }catch (NumberFormatException e){
+            }catch (NumberFormatException nfe){
+                System.err.println("NumberFormatException:" +nfe.getMessage());
                 System.err.println("Please enter a number");
 
             }
@@ -144,11 +146,11 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 System.out.println("Add doc");
                 //take surname,name,DOB,telnum,licenceNum,specialisation as inputs
                 System.out.println("Enter the name:");
-                String name = input.nextLine();
+                String name = input.next();
                 System.out.println("Enter the surname:");
-                String sunrname = input.nextLine();
+                String sunrname = input.next();
 
-                int day = dateInputWithValidation("Enter the date of birth - Day (1-32):",1,32);
+                int day = dateInputWithValidation("Enter the date of birth - Day (1-31):",1,31);
 
                 int month = dateInputWithValidation("Enter the date of birth - Day (1-12):",1,12);
 
@@ -157,6 +159,17 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 String telNum = inputStringIntNumWithValidation("Enter the telephone number:");
 
                 String licenceNum = inputStringIntNumWithValidation("Enter the licence number:");
+                //check for licenceNum Duplicates
+                boolean exitBlock = false;
+                for (int i = 0; i < doctorsInfo.size(); i++){
+                    if(doctorsInfo.get(i).getLicenceNum().equals(licenceNum)){
+                        System.out.println("DOCTOR ALREADY EXISTS WITH THAT LICENCE NUMBER\n" +
+                                "TRY AGAIN");
+                        exitBlock = true;
+                    }
+                }
+                if(exitBlock)
+                    break;
 
                 System.out.println("Enter the specialisation:");
                 String specialisation = input.next();
@@ -165,8 +178,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 //take in details
                 break;
             case "D":
-                System.out.println("Enter the licence number of the doctor you wish to delete");
-                String licence = input.next();
+                String licence = inputStringIntNumWithValidation("Enter the licence number of the doctor you wish to delete");
                 deleteDoctor(doctorsInfo,licence);
                 break;
             case "P":
@@ -200,7 +212,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
         do{
             //print a menu of options
             menuPrint();
-            choice = input.nextLine().toUpperCase();
+            choice = input.next().toUpperCase();
             w.menu(choice);
         }while (!choice.equals("Q"));
     }

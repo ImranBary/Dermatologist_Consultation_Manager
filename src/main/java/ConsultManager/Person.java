@@ -30,8 +30,18 @@ public class Person {
         this.name = name.toUpperCase();
     }
 
+    /**
+     * Method to set telephone number and only accept a passable integer in String format
+     * @param telNum
+     */
     public void setTelNum(String telNum) {
-        this.telNum = telNum;
+        try{
+            Integer.parseInt(telNum);
+            this.telNum = telNum;
+        }catch(NumberFormatException nfe){
+            throw new NumberFormatException(nfe.getMessage());
+        }
+
     }
 
     public String getTelNum() {

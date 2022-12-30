@@ -27,8 +27,18 @@ public class Doctor extends Person implements Comparable<Doctor>{
         return specialisation;
     }
 
+    /**
+     * Method to set licence number - only accepting a parsable integer in string format
+     * @param licenceNum
+     */
     public void setLicenceNum(String licenceNum) {
-        this.licenceNum = licenceNum;
+        try{
+            Integer.parseInt(licenceNum);
+            this.licenceNum = licenceNum;
+        }catch(NumberFormatException nfe){
+            throw new NumberFormatException(nfe.getMessage());
+        }
+
     }
 
     public void setSpecialisation(String specialisation) {
