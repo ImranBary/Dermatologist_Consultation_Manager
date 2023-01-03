@@ -1,13 +1,6 @@
 package ConsultManager;
 
-
-import com.google.crypto.tink.Aead;
-import com.google.crypto.tink.KeysetHandle;
-import com.google.crypto.tink.aead.AeadConfig;
-import com.google.crypto.tink.aead.AeadFactory;
-import com.google.crypto.tink.aead.AeadKeyTemplates;
 import com.google.crypto.tink.subtle.AesGcmJce;
-
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 

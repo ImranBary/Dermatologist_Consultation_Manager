@@ -13,8 +13,8 @@ class WestminsterSkinConsultationManagerTest {
     @Test
     void addDoctorPaul() throws IOException {
         WestminsterSkinConsultationManager w = new WestminsterSkinConsultationManager();
-        w.addDoctor(new Doctor("McCartney","Paul","071283218","001","Srg Pepper",new Date(12,12,1956)));
         ArrayList<Doctor> doc = w.getDocArray();
+        doc.add(new Doctor("McCartney","Paul","071283218","001","Srg Pepper",new Date(12,12,1956)));
         //check the last index of the array
         assertEquals("001",doc.get(doc.size()-1).getLicenceNum());
 
@@ -22,8 +22,8 @@ class WestminsterSkinConsultationManagerTest {
     @Test
     void addDoctorJohn() throws IOException {
         WestminsterSkinConsultationManager w = new WestminsterSkinConsultationManager();
-        w.addDoctor(new Doctor("Lennon","John","071282181","009","The walrus",new Date(12,12,1956)));
         ArrayList<Doctor> doc = w.getDocArray();
+        doc.add(new Doctor("Lennon","John","071282181","009","The walrus",new Date(12,12,1956)));
         //check the last index of the array
         assertEquals("The walrus",doc.get(doc.size()-1).getSpecialisation());
 
@@ -32,8 +32,8 @@ class WestminsterSkinConsultationManagerTest {
     void deleteDoctorGeorge() throws IOException {
         //first we need to add George
         WestminsterSkinConsultationManager w = new WestminsterSkinConsultationManager();
-        w.addDoctor(new Doctor("Harrison","George","07128323","010","Something",new Date(12,12,1956)));
         ArrayList<Doctor> doc = w.getDocArray();
+        doc.add(new Doctor("Harrison","George","07128323","010","Something",new Date(12,12,1956)));
         //deleting George from his licence number
         w.deleteDoctor(doc,"010");
         //confirm that the last doctor's name in the array is not George

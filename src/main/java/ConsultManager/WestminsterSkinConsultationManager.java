@@ -1,7 +1,6 @@
 package ConsultManager;
 
 
-import javax.print.Doc;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -33,13 +32,49 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
     }
 
     @Override
-    public void addDoctor(Doctor doctor) {
-        //make doc object with the above inputs, better for vacillation
+    public void addDoctor(ArrayList<Doctor> doctorsInfo, int MAX_DOCS) {
+        //make doc object with the inputs
         //add info to array if we're not yet at max capacity
         if (doctorsInfo.size() < MAX_DOCS){
-            doctorsInfo.add(doctor);
+            System.out.println("Add doc");
+            //take surname,name,DOB,telnum,licenceNum,specialisation as inputs
+            System.out.println("Enter the name:");
+            String name = input.next();
+            System.out.println("Enter the surname:");
+            String sunrname = input.next();
+
+            int day = dateInputWithValidation("Enter the date of birth - Day (1-31):",1,31);
+
+            int month = dateInputWithValidation("Enter the date of birth - Day (1-12):",1,12);
+
+            int year = dateInputWithValidation("Enter the date of birth - Year (1900-2023):",1900,2023);
+
+            String telNum = inputStringIntNumWithValidation("Enter the telephone number:");
+
+            String licenceNum = inputStringIntNumWithValidation("Enter the licence number:");
+            //check for licenceNum Duplicates
+            boolean exitBlock = false;
+            for (int i = 0; i < doctorsInfo.size(); i++){
+                if(doctorsInfo.get(i).getLicenceNum().equals(licenceNum)){
+                    exitBlock = true;
+                }
+            }
+            if(exitBlock){
+                System.out.println("""
+                                           DOCTOR ALREADY EXISTS WITH THAT LICENCE NUMBER
+                                           TRY AGAIN""");
+            }else{
+                System.out.println("Enter the specialisation:");
+                String specialisation = input.next();
+                Date dateOfBirth = new Date(day,month,year);
+
+                doctorsInfo.add(new Doctor(sunrname,name,telNum,licenceNum,specialisation,dateOfBirth));
+            }
+
+
+
         }else {
-            System.err.println("DOCTOR NOT ADDED - TOO MANY DOCTORS");
+            System.err.println("CANNOT ADD DOCTOR - TOO MANY DOCTORS");
         }
     }
 
@@ -143,38 +178,7 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
     public void menu(String choice) throws IOException, GeneralSecurityException {
         switch(choice){
             case "A":
-                System.out.println("Add doc");
-                //take surname,name,DOB,telnum,licenceNum,specialisation as inputs
-                System.out.println("Enter the name:");
-                String name = input.next();
-                System.out.println("Enter the surname:");
-                String sunrname = input.next();
-
-                int day = dateInputWithValidation("Enter the date of birth - Day (1-31):",1,31);
-
-                int month = dateInputWithValidation("Enter the date of birth - Day (1-12):",1,12);
-
-                int year = dateInputWithValidation("Enter the date of birth - Year (1900-2023):",1900,2023);
-
-                String telNum = inputStringIntNumWithValidation("Enter the telephone number:");
-
-                String licenceNum = inputStringIntNumWithValidation("Enter the licence number:");
-                //check for licenceNum Duplicates
-                boolean exitBlock = false;
-                for (int i = 0; i < doctorsInfo.size(); i++){
-                    if(doctorsInfo.get(i).getLicenceNum().equals(licenceNum)){
-                        System.out.println("DOCTOR ALREADY EXISTS WITH THAT LICENCE NUMBER\n" +
-                                "TRY AGAIN");
-                        exitBlock = true;
-                    }
-                }
-                if(exitBlock)
-                    break;
-
-                System.out.println("Enter the specialisation:");
-                String specialisation = input.next();
-                Date dateOfBirth = new Date(day,month,year);
-                addDoctor(new Doctor(sunrname,name,telNum,licenceNum,specialisation,dateOfBirth));
+                addDoctor(doctorsInfo,MAX_DOCS);
                 //take in details
                 break;
             case "D":
@@ -194,8 +198,9 @@ public class WestminsterSkinConsultationManager implements SkinConsultationManag
                 runGui(doctorsInfo);
                 break;
             case "Q":
-                System.out.println("You selected Quit, press S to save to not lose your data \n" +
-                        "or press anything else to Quit without saving.");
+                System.out.println("""
+                                   You selected Quit, press S to save to not lose your data 
+                                   or press anything else to Quit without saving.""");
                 String saveOrQuit = input.next();
                 if (saveOrQuit.toUpperCase().equals("S")){
                     saveFile(fileName);

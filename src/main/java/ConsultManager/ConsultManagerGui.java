@@ -1,12 +1,10 @@
 package ConsultManager;
-import com.google.crypto.tink.subtle.AesGcmJce;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -20,6 +18,7 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
     private JComboBox ageDayComboBox;
     private JComboBox ageMonthComboBox;
     private JComboBox ageYearComboBox;
+    private JComboBox jComboBox;
     private JLabel doctorDetails;
     private JLabel consultDateTime;
     private JLabel availabilityPrompt;
@@ -38,12 +37,16 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
     private int selectedTimeIndex;
     private ArrayList<Doctor> doc = w.getDocArray();
     private ArrayList<Consultation> consultations = new ArrayList<>();
+
+
     public ConsultManagerGui(ArrayList<Doctor> d) throws IOException, GeneralSecurityException {
         super("Consultation Manager");
         JPanel doctorSelectPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
+
         view = new JButton("view Doctors");
+
         //setSize(view);
         c.gridx = 1;
         c.gridy = 0;
@@ -63,8 +66,7 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
         for(int i = 0; i < doc.size(); i++){
             docArrayList[i+1] = doc.get(i).forDropDownList();
         }
-        JComboBox<String> jComboBox = new JComboBox<>(docArrayList);
-        //setSize(jComboBox);
+        jComboBox = new JComboBox<>(docArrayList);
         c.gridx = 0;
         c.gridy = 1;
         c.gridheight = 1;
@@ -136,42 +138,32 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
                 selectedMonthIndex = monthComboBox.getSelectedIndex();
                 selectedYearIndex = yearComboBox.getSelectedIndex();
                 selectedTimeIndex = time.getSelectedIndex();
-                if(validateComboBoxIndex(selectedDocIndex,selectedDayIndex,selectedMonthIndex,selectedYearIndex) == 1){
-                    JOptionPane.showMessageDialog(null, "Select valid doctor");
-                }else if(validateComboBoxIndex(selectedDocIndex,selectedDayIndex,selectedMonthIndex,selectedYearIndex) == 2){
-                    JOptionPane.showMessageDialog(null, "Select valid day");
-                }else if(validateComboBoxIndex(selectedDocIndex,selectedDayIndex,selectedMonthIndex,selectedYearIndex) == 3){
-                    JOptionPane.showMessageDialog(null, "Select valid month");
-                }else if(validateComboBoxIndex(selectedDocIndex,selectedDayIndex,selectedMonthIndex,selectedYearIndex) == 4) {
-                    JOptionPane.showMessageDialog(null, "Select valid year");
-                }else if(validateComboBoxIndex(selectedDocIndex,selectedDayIndex,selectedMonthIndex,selectedYearIndex) == 5){
-                    //prepare user selections to string to put into corresponding jlabel text
-                    String docDetails = jComboBox.getItemAt(selectedDocIndex);
-                    String dateDetails = dayComboBox.getItemAt(selectedDayIndex)+
-                            "/"+ monthComboBox.getItemAt(selectedMonthIndex)+
-                            "/"+ yearComboBox.getItemAt(selectedYearIndex);
-                    //performs check if doctor is busy at the date and time
-                    boolean docNotBusy = true;
-                    for (int i = 0; i < consultations.size(); i++){
-                        String[] hourAndMin = timeArr[selectedTimeIndex].split(":");
-                        if(
-                            //Compare the doctor Licences
-                                consultations.get(i).getDoctor().getLicenceNum().equals(doc.get(selectedDocIndex-1).getLicenceNum())
-                                        //compare the two dates
-                                        && consultations.get(i).getDate().getDate().equals(dateDetails)
-                                        //compare the hour
-                                        && consultations.get(i).getDate().getTime()[0]== Integer.parseInt(hourAndMin[0])
-                                        //compare the min
-                                        && consultations.get(i).getDate().getTime()[1]== Integer.parseInt(hourAndMin[1])){
-                            //if true set docNotBusy to false
-                            docNotBusy = false;
-                        }
-                    }
-                    if(docNotBusy){
-                        //if the doctor is available continue with user selections
-                        availabilityPrompt.setText("Available");
-                        availabilityPrompt.setForeground(Color.green);
-                        setSize(availabilityPrompt);
+                switch (validateComboBoxIndex(selectedDocIndex,selectedDayIndex,selectedMonthIndex,selectedYearIndex)) {
+                    case 1 -> JOptionPane.showMessageDialog(null, "Select valid doctor");
+                    case 2 -> JOptionPane.showMessageDialog(null, "Select valid day");
+                    case 3 -> JOptionPane.showMessageDialog(null, "Select valid month");
+                    case 4 -> JOptionPane.showMessageDialog(null, "Select valid year");
+                    case 5 -> {
+                        //prepare user selections to string to put into corresponding JLabel text
+                        String docDetails = (String) jComboBox.getItemAt(selectedDocIndex);
+                        String dateDetails = dayComboBox.getItemAt(selectedDayIndex)+
+                                "/"+ monthComboBox.getItemAt(selectedMonthIndex)+
+                                "/"+ yearComboBox.getItemAt(selectedYearIndex);
+                        if(checkDoctorsAvailability( consultations, timeArr, selectedTimeIndex, dateDetails)){
+                            //if the doctor is available continue with user selections
+                            availabilityPrompt.setText("Available");
+                            availabilityPrompt.setForeground(Color.green);
+                        }else {
+                            //if doc not available randomise doc selection
+                            availabilityPrompt.setText("Not Available - Doctor Randomised");
+                            Random rnd = new Random();
+                            //get random doc excluding the already selected
+                            int newSelectedDocIndex = getRandomWithExclusion(rnd,1,docArrayList.length-1,selectedDocIndex);
+                            selectedDocIndex = newSelectedDocIndex;
+                            docDetails = (String) jComboBox.getItemAt(selectedDocIndex);
+                            availabilityPrompt.setForeground(Color.red);
+                            
+                        }   setSize(availabilityPrompt);
                         c.gridx = 0;
                         c.gridy = 4;
                         c.gridheight = 1;
@@ -184,36 +176,9 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
                         monthComboBox.setEnabled(false);
                         yearComboBox.setEnabled(false);
                         time.setEnabled(false);
-                    }else {
-                        //if doc not available randomise doc selection
-                        //doctorsNotAvailable.add(selectedDocIndex);
-                        availabilityPrompt.setText("Not Available - Doctor Randomised");
-                        Random rnd = new Random();
-                        //get random doc excluding the already selected
-                        //int[]doctorsNotAvailableArray = convertIntegers(doctorsNotAvailable);
-
-
-                        int newSelectedDocIndex = getRandomWithExclusion(rnd,1,docArrayList.length-1,selectedDocIndex);
-                        //int newSelectedDocIndex = getRandomWithExclusion(rnd,1,docArrayList.length-1,doctorsNotAvailableArray);
-                        selectedDocIndex = newSelectedDocIndex;
-                        docDetails = jComboBox.getItemAt(selectedDocIndex);
-                        availabilityPrompt.setForeground(Color.red);
-                        setSize(availabilityPrompt);
-                        c.gridx = 0;
-                        c.gridy = 4;
-                        c.gridheight = 1;
-                        c.gridwidth = 2;
-                        doctorSelectPanel.add(availabilityPrompt,c);
-                        doctorDetails.setText(docDetails);
-                        consultDateTime.setText(dateDetails);
-                        jComboBox.setEnabled(false);
-                        dayComboBox.setEnabled(false);
-                        monthComboBox.setEnabled(false);
-                        yearComboBox.setEnabled(false);
-                        time.setEnabled(false);
-                        //doctorsNotAvailable.add(selectedDocIndex);
                     }
-
+                    default -> {
+                    }
                 }
 
             }
@@ -338,8 +303,6 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
         c.gridwidth = 2;
         patientSelectPanel.add(consultNotesLabel,c);
         consultNotes = new JTextField(20);
-        consultNotes.setPreferredSize(new Dimension(30,30));
-        //setSize(consultNotes);
         c.gridx = 2;
         c.gridy = 5;
         c.gridheight = 1;
@@ -384,8 +347,6 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
                     } catch (GeneralSecurityException ex) {
                         throw new RuntimeException(ex);
                     }
-
-
                     c.setDoctor(doc.get(selectedDocIndex - 1));
                     Date d = new Date(Integer.parseInt(day[selectedDayIndex]), Integer.parseInt(month[selectedMonthIndex])
                             , Integer.parseInt(year[selectedYearIndex]), timeArr[selectedTimeIndex]);
@@ -397,17 +358,8 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
                             Integer.parseInt(ageYears[ageYearComboBox.getSelectedIndex()])
                     ));
                     c.setPatient(p);
-                    //cost check, patient that has already had a consultation will be charged more
-                    boolean patientFound = false;
-                    for (int i = 0; i < consultations.size(); i++) {
-                        if (consultations.get(i).getPatient().getiD().equals(patientId.getText())) {
-                            patientFound = true;
-                        }
-                    }
-                    if (patientFound)
-                        c.setCost(25);
-                    else
-                        c.setCost(15);
+                    //get cost using the calculate cost method defined below
+                    c.setCost(calculateCost(consultations));
 
                     try {
                         c.setNotes(consultNotes.getText());
@@ -416,39 +368,16 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
                     }
                     consultations.add(c);
 
-
-
                     //reset the entire j frame
-                    doctorDetails.setText("");
-                    consultDateTime.setText("");
-                    patientName.setText("");
-                    patientSurname.setText("");
-                    patientId.setText("");
-                    patientTelNum.setText("");
-                    consultNotes.setText("");
-                    jComboBox.setEnabled(true);
-                    dayComboBox.setEnabled(true);
-                    monthComboBox.setEnabled(true);
-                    yearComboBox.setEnabled(true);
-                    time.setEnabled(true);
-                    dayComboBox.setSelectedIndex(0);
-                    monthComboBox.setSelectedIndex(0);
-                    yearComboBox.setSelectedIndex(0);
-                    ageYearComboBox.setSelectedIndex(0);
-                    ageMonthComboBox.setSelectedIndex(0);
-                    ageDayComboBox.setSelectedIndex(0);
-                    jComboBox.setSelectedIndex(0);
-                    availabilityPrompt.setText("");
+                    resetJFrame();
                 }
-
-
             }
         });
 
         previewConsultation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(consultations.size() == 0){
+                if(consultations.isEmpty()){
                     JOptionPane.showMessageDialog(null,"No consultations to display");
                 }else {
                     //convert consultation data into string
@@ -463,7 +392,6 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
             }
         });
 
-
         //container for both panels
         JPanel containerPanel = new JPanel();
         containerPanel.setLayout(new GridLayout(2,1));
@@ -474,6 +402,54 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    /**
+     * //cost check, patient that has already had a consultation will be charged more
+     * @param consultations
+     * @return cost - either 15 for first time customers,  or 25 for returning customers
+     */
+    public int calculateCost(ArrayList<Consultation> consultations){
+        boolean patientFound = false;
+        //initials the cost to 15
+        int cost = 15;
+        for (int i = 0; i < consultations.size(); i++) {
+            if (consultations.get(i).getPatient().getiD().equals(patientId.getText())) {
+                patientFound = true;
+            }
+        }
+        //change cost to 25 only if the patient already exists in the list of consultations
+        if (patientFound)
+            cost = 25;
+
+        return cost;
+
+    }
+
+    /**
+     * Method resets all the components of the JPanel
+     */
+    public void resetJFrame(){
+        doctorDetails.setText("");
+        consultDateTime.setText("");
+        patientName.setText("");
+        patientSurname.setText("");
+        patientId.setText("");
+        patientTelNum.setText("");
+        consultNotes.setText("");
+        jComboBox.setEnabled(true);
+        dayComboBox.setEnabled(true);
+        monthComboBox.setEnabled(true);
+        yearComboBox.setEnabled(true);
+        time.setEnabled(true);
+        dayComboBox.setSelectedIndex(0);
+        monthComboBox.setSelectedIndex(0);
+        yearComboBox.setSelectedIndex(0);
+        ageYearComboBox.setSelectedIndex(0);
+        ageMonthComboBox.setSelectedIndex(0);
+        ageDayComboBox.setSelectedIndex(0);
+        jComboBox.setSelectedIndex(0);
+        availabilityPrompt.setText("");
     }
     /**
      * https://stackoverflow.com/questions/6443176/how-can-i-generate-a-random-number-within-a-range-but-exclude-some
@@ -519,7 +495,32 @@ public class ConsultManagerGui extends JFrame implements ActionListener {
             return 4;
         else
             return 5;
-
     }
-
+    /**
+     * performs check if doctor is busy at the date and time
+     * @param consultations
+     * @param timeArr
+     * @param selectedTimeIndex
+     * @param dateDetails
+     * @return Boolean true if the doctor is not busy, and false if the doctor is busy
+     */
+    public boolean checkDoctorsAvailability(ArrayList<Consultation> consultations,String[] timeArr, int selectedTimeIndex, String dateDetails){
+        boolean docNotBusy = true;
+        for (int i = 0; i < consultations.size(); i++){
+            String[] hourAndMin = timeArr[selectedTimeIndex].split(":");
+            if(
+                //Compare the doctor Licences
+                    consultations.get(i).getDoctor().getLicenceNum().equals(doc.get(selectedDocIndex-1).getLicenceNum())
+                            //compare the two dates
+                            && consultations.get(i).getDate().getDate().equals(dateDetails)
+                            //compare the hour
+                            && consultations.get(i).getDate().getTime()[0]== Integer.parseInt(hourAndMin[0])
+                            //compare the min
+                            && consultations.get(i).getDate().getTime()[1]== Integer.parseInt(hourAndMin[1])){
+                //if true set docNotBusy to false
+                docNotBusy = false;
+            }
+        }
+        return docNotBusy;
+    }
 }

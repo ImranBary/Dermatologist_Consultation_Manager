@@ -22,24 +22,12 @@ public class DoctorTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object temp = null;
         switch(columnIndex) {
-            case 0:
-                temp = doctorsInfo.get(rowIndex).getName();
-                break;
-            case 1:
-                temp = doctorsInfo.get(rowIndex).getSurname();
-                break;
-            case 2:
-                temp = doctorsInfo.get(rowIndex).getDateOfBrth();
-                break;
-            case 3:
-                temp = doctorsInfo.get(rowIndex).getTelNum();
-                break;
-            case 4:
-                temp = doctorsInfo.get(rowIndex).getLicenceNum();
-                break;
-            case 5:
-                temp = doctorsInfo.get(rowIndex).getSpecialisation();
-                break;
+            case 0 -> temp = doctorsInfo.get(rowIndex).getName();
+            case 1 -> temp = doctorsInfo.get(rowIndex).getSurname();
+            case 2 -> temp = doctorsInfo.get(rowIndex).getDateOfBrth();
+            case 3 -> temp = doctorsInfo.get(rowIndex).getTelNum();
+            case 4 -> temp = doctorsInfo.get(rowIndex).getLicenceNum();
+            case 5 -> temp = doctorsInfo.get(rowIndex).getSpecialisation();
         }
         return temp;
     }

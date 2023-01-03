@@ -47,7 +47,7 @@ public class Doctor extends Person implements Comparable<Doctor>{
 
     @Override
     public String toString(){
-        return getSurname()+"#"+getName()+"#"+getLicenceNum()+"#"+getTelNum()+"#"+getSpecialisation()+"#"+getDateOfBrth();
+        return getSurname()+"#"+getName()+"#"+getTelNum()+"#"+getLicenceNum()+"#"+getSpecialisation()+"#"+getDateOfBrth();
     }
     //needs dob
     public String forPrint(){
